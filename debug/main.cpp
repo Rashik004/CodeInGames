@@ -285,6 +285,19 @@ Wall BestWall()
 {
     MoveDetails currentMoves[4], bestMove[4];
     Wall bestWall;
+    for(int i=0;i<9;i++)
+    {
+        for(int j=0;j<9;j++)
+        {
+            for(int k=0;k<2; k++)
+            {
+                if(placedWallStart[i][j][k])
+                {
+                    cout<<' '<<i<<' '<<j<<' '<<k<<endl;
+                }
+            }
+        }
+    }
     bestWall.isInitialized=false;
     bool attackedTarget=false;
     int bestResult=0;
@@ -414,6 +427,7 @@ int main()
     while (1)
     {
         mem(cost, -1);
+        mem(placedWallStart,false);
         for (int i = 0; i < playerCount; i++)
         {
             int x; // x-coordinate of the player
