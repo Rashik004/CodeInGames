@@ -150,7 +150,7 @@ bool canPlaceWall(int x, int y, char orientation)
         checkX=x+dirX[0]+dirX[1];/// Go UP+RIGHT
         checkY=y+dirY[0]+dirY[1];/// Go UP+RIGHT
     }
-    if(placedWallStart[checkX][checkY][orientation=='V'])
+    if(placedWallStart[checkX][checkY][orientation!='V'])
     {
         return false;
     }
