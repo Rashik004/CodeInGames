@@ -281,6 +281,36 @@ void PlaceWall(int x,int y,char wallOrientation)
         wallDetails[x][y].left=true;
     }
 }
+
+bool wallUnitTest()
+{
+    for(int i=0;i<9; i++)
+    {
+        for(int j=0;j<9; j++)
+        {
+            for(int k=0;k<2; k++)
+            {
+                if(canPlaceWall(i,j,orientationList[k]))
+                {
+                    PlaceWall(i,j,orientationList[k]);
+                    removeWall(i,j,orientationList[k]);
+                }
+            }
+        }
+    }
+
+    for(int i=0;i<9; i++)
+    {
+        for(int j=0;j<9; j++)
+        {
+            if(wallDetails[i][j].top || wallDetails[i][j].left || placedWallStart[i][j][0] || placedWallStart[i][j][1])
+                return false;
+        }
+    }
+    return true;
+}
+
+
 Wall BestWall()
 {
     MoveDetails currentMoves[4], bestMove[4];
@@ -313,6 +343,10 @@ Wall BestWall()
             }
             for(int k=0;k<2; k++)
             {
+//                if(!wallUnitTest())
+//                {
+////                    cout<<"jhamela!!! "<<i<<' '<<j<<' '<<k<<endl<<endl;
+//                }
                 if(!canPlaceWall(i,j,orientationList[k]))///check if we can place a wall
                 {
                     continue;
@@ -322,6 +356,7 @@ Wall BestWall()
                 {
                     currentMoves[player]=nextMove(playersX[player],playersY[player],GetTarget(player));
                 }
+                removeWall(i,j,orientationList[k]);
                 if(currentMoves[myId].cost>nextBestMoves[myId].cost)///if this path becomes greater than my prev shortest path then abort
                 {
                     continue;
@@ -363,7 +398,7 @@ Wall BestWall()
                         }
                     }
                 }
-                removeWall(i,j,orientationList[k]);
+
             }
         }
     }
@@ -373,33 +408,7 @@ Wall BestWall()
 
 
 
-bool wallUnitTest()
-{
-    for(int i=0;i<9; i++)
-    {
-        for(int j=0;j<9; j++)
-        {
-            for(int k=0;k<2; k++)
-            {
-                if(canPlaceWall(i,j,orientationList[k]))
-                {
-                    PlaceWall(i,j,orientationList[k]);
-                    removeWall(i,j,orientationList[k]);
-                }
-            }
-        }
-    }
 
-    for(int i=0;i<9; i++)
-    {
-        for(int j=0;j<9; j++)
-        {
-            if(wallDetails[i][j].top || wallDetails[i][j].left || placedWallStart[i][j][0] || placedWallStart[i][j][1])
-                return false;
-        }
-    }
-    return true;
-}
 
 
 
@@ -407,7 +416,7 @@ int main()
 {
 
 //    int targetX=-1,targetY=-1;
-    cout<<wallUnitTest()<<endl<<endl;
+//    cout<<wallUnitTest()<<endl<<endl;
     cin >> w >> h >> playerCount >> myId; cin.ignore();
 //    if(myId==0)
 //    {
@@ -494,11 +503,11 @@ int main()
             }
         }
 //        cout<<directions[myNextDirection]<<endl;
-//        if(!isSomeoneAhead)
-//        {
-//            cout<<directions[myNextDirection]<<endl;
-//            continue;
-//        }
+        if(!isSomeoneAhead)
+        {
+            cout<<directions[myNextDirection]<<endl;
+            continue;
+        }
 //        else
 //        {
 //
