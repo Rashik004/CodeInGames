@@ -1,8 +1,9 @@
 /*
 9 9 2 1
-1 5 4
-8 7 4
-0
+1 6 4
+8 0 3
+1
+2 4 V
 */
 
 
@@ -315,19 +316,19 @@ Wall BestWall()
 {
     MoveDetails currentMoves[4], bestMove[4];
     Wall bestWall;
-    for(int i=0;i<9;i++)
-    {
-        for(int j=0;j<9;j++)
-        {
-            for(int k=0;k<2; k++)
-            {
-                if(placedWallStart[i][j][k])
-                {
-                    cout<<' '<<i<<' '<<j<<' '<<k<<endl;
-                }
-            }
-        }
-    }
+//    for(int i=0;i<9;i++)
+//    {
+//        for(int j=0;j<9;j++)
+//        {
+//            for(int k=0;k<2; k++)
+//            {
+//                if(placedWallStart[i][j][k])
+//                {
+//                    cout<<' '<<i<<' '<<j<<' '<<k<<endl;
+//                }
+//            }
+//        }
+//    }
     bestWall.isInitialized=false;
     bool attackedTarget=false;
     int bestResult=0;
