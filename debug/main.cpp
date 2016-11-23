@@ -1,9 +1,9 @@
 /*
 9 9 2 1
-1 6 4
-8 0 3
+1 7 4
+8 7 3
 1
-2 4 V
+2 5 V
 */
 
 
@@ -125,7 +125,7 @@ Target GetTarget(int playerIndex)
 }
 bool canPlaceWall(int x, int y, char orientation)
 {
-    int checkX, checkY;
+    int checkX, checkY,beforeX, beforeY, afterX, afterY;
 
     if(orientation=='V')
     {
@@ -138,6 +138,13 @@ bool canPlaceWall(int x, int y, char orientation)
                 int s=3;
 
             }
+
+        afterX=x+dirX[2];;/// Go DOWN
+        afterY=y+dirY[2];;/// Go DOWN
+
+        beforeX=x+dirX[0];/// Go UP
+        beforeY=y+dirY[0];/// Go UP
+
         checkX=x+dirX[2]+dirX[3];/// Go DOWN+LEFT
         checkY=y+dirY[2]+dirY[3];/// Go DOWN+LEFT
 
@@ -147,10 +154,18 @@ bool canPlaceWall(int x, int y, char orientation)
     {
         if(y==0 || x>7)
             return false;
+
+        afterX=x+dirX[1];/// Go RIGHT
+        afterY=y+dirY[1];/// Go RIGHT
+
+        beforeX=x+dirX[3];/// Go LEFT
+        beforeY=y+dirY[3];/// Go LEFT
+
         checkX=x+dirX[0]+dirX[1];/// Go UP+RIGHT
         checkY=y+dirY[0]+dirY[1];/// Go UP+RIGHT
     }
-    if(placedWallStart[checkX][checkY][orientation!='V'])
+   ///  If This wall intersects with another wall           If This wall is same as an existing wall                            If this wall falls within a part of another wall
+    if(placedWallStart[checkX][checkY][orientation!='V'] || placedWallStart[x][y][orientation=='V'] || placedWallStart[beforeX][beforeY][orientation=='V'] || placedWallStart[afterX][afterY][orientation=='V'])
     {
         return false;
     }
@@ -504,26 +519,23 @@ int main()
             }
         }
 //        cout<<directions[myNextDirection]<<endl;
-        if(!isSomeoneAhead)
+        if(!isSomeoneAhead || !playersWallsLeft[myId])
         {
             cout<<directions[myNextDirection]<<endl;
             continue;
         }
-//        else
-//        {
-//
-//        }
+
         bool gotAresult;
-        if(isSomeoneAhead)
+
+
+        Wall wall=BestWall();
+        if(wall.isInitialized)
         {
-            Wall wall=BestWall();
-            if(wall.isInitialized)
-            {
-                cout<<wall.point.x<<' '<<wall.point.y<<' '<<wall.orientation<<endl;
-                gotAresult=true;
-            }
+            cout<<wall.point.x<<' '<<wall.point.y<<' '<<wall.orientation<<endl;
+            gotAresult=true;
         }
-        else if(gotAresult)
+
+        else if(!gotAresult)
         {
             cout<<directions[myNextDirection]<<endl;
         }
