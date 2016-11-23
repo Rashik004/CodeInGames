@@ -132,12 +132,12 @@ bool canPlaceWall(int x, int y, char orientation)
 
         if(x==0 || y>7)
             return false;
-                    if(x==2 && y==5)
-            {
-                int as=34;
-                int s=3;
-
-            }
+//                    if(x==2 && y==5)
+//            {
+//                int as=34;
+//                int s=3;
+//
+//            }
 
         afterX=x+dirX[2];;/// Go DOWN
         afterY=y+dirY[2];;/// Go DOWN
@@ -298,52 +298,40 @@ void PlaceWall(int x,int y,char wallOrientation)
     }
 }
 
-bool wallUnitTest()
-{
-    for(int i=0;i<9; i++)
-    {
-        for(int j=0;j<9; j++)
-        {
-            for(int k=0;k<2; k++)
-            {
-                if(canPlaceWall(i,j,orientationList[k]))
-                {
-                    PlaceWall(i,j,orientationList[k]);
-                    removeWall(i,j,orientationList[k]);
-                }
-            }
-        }
-    }
-
-    for(int i=0;i<9; i++)
-    {
-        for(int j=0;j<9; j++)
-        {
-            if(wallDetails[i][j].top || wallDetails[i][j].left || placedWallStart[i][j][0] || placedWallStart[i][j][1])
-                return false;
-        }
-    }
-    return true;
-}
+//bool wallUnitTest()
+//{
+//    for(int i=0;i<9; i++)
+//    {
+//        for(int j=0;j<9; j++)
+//        {
+//            for(int k=0;k<2; k++)
+//            {
+//                if(canPlaceWall(i,j,orientationList[k]))
+//                {
+//                    PlaceWall(i,j,orientationList[k]);
+//                    removeWall(i,j,orientationList[k]);
+//                }
+//            }
+//        }
+//    }
+//
+//    for(int i=0;i<9; i++)
+//    {
+//        for(int j=0;j<9; j++)
+//        {
+//            if(wallDetails[i][j].top || wallDetails[i][j].left || placedWallStart[i][j][0] || placedWallStart[i][j][1])
+//                return false;
+//        }
+//    }
+//    return true;
+//}
 
 
 Wall BestWall()
 {
     MoveDetails currentMoves[4], bestMove[4];
     Wall bestWall;
-//    for(int i=0;i<9;i++)
-//    {
-//        for(int j=0;j<9;j++)
-//        {
-//            for(int k=0;k<2; k++)
-//            {
-//                if(placedWallStart[i][j][k])
-//                {
-//                    cout<<' '<<i<<' '<<j<<' '<<k<<endl;
-//                }
-//            }
-//        }
-//    }
+
     bestWall.isInitialized=false;
     bool attackedTarget=false;
     int bestResult=0;
@@ -351,12 +339,12 @@ Wall BestWall()
     {
         for(int j=0; j<h; j++)
         {
-            if(i==2 && j==5)
-            {
-                int as=34;
-                int s=3;
-
-            }
+//            if(i==2 && j==5)
+//            {
+//                int as=34;
+//                int s=3;
+//
+//            }
             for(int k=0;k<2; k++)
             {
 //                if(!wallUnitTest())
@@ -431,24 +419,9 @@ Wall BestWall()
 int main()
 {
 
-//    int targetX=-1,targetY=-1;
-//    cout<<wallUnitTest()<<endl<<endl;
+
     cin >> w >> h >> playerCount >> myId; cin.ignore();
-//    if(myId==0)
-//    {
-//        targetX=w-1;
-//        ultimateDirection=1;
-//    }
-//    else if(myId==1)
-//    {
-//        targetX=0;
-//        ultimateDirection=3;
-//    }
-//    else
-//    {
-//        targetY=h-1;
-//        ultimateDirection=2;
-//    }
+
     while (1)
     {
         mem(cost, -1);
@@ -474,8 +447,7 @@ int main()
             PlaceWall(wallX, wallY, wallOrientation);
         }
 
-        // Write an action using cout. DON'T FORGET THE "<< endl"
-        // To debug: cerr << "Debug messages..." << endl;
+
 
 
 
@@ -518,7 +490,7 @@ int main()
                 targetPlayer=i;
             }
         }
-//        cout<<directions[myNextDirection]<<endl;
+
         if(!isSomeoneAhead || !playersWallsLeft[myId])
         {
             cout<<directions[myNextDirection]<<endl;
