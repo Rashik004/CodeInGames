@@ -13,6 +13,7 @@
 #define pb push_back
 #define pii pair<int,int>
 #define mem(ara, value) memset(ara, value, sizeof(ara))
+#define MAXPATH 10000
 using namespace std;
 int w; // width of the board
 int h; // height of the board
@@ -27,7 +28,7 @@ int playerCount; // number of players (2 or 3)
 int targetPlayer;
 char orientationList[]="VH";
 string directions[]={ "UP", "RIGHT", "DOWN", "LEFT"};
-
+bool validPlayer[3];
 struct WallDetails{
     bool top;
     bool left;
@@ -126,18 +127,12 @@ Target GetTarget(int playerIndex)
 bool canPlaceWall(int x, int y, char orientation)
 {
     int checkX, checkY,beforeX, beforeY, afterX, afterY;
-
-    if(orientation=='V')
+    int orientationIndex= (orientation=='V');
+    if(orientationIndex)
     {
 
         if(x==0 || y>7)
             return false;
-//                    if(x==2 && y==5)
-//            {
-//                int as=34;
-//                int s=3;
-//
-//            }
 
         afterX=x+dirX[2];;/// Go DOWN
         afterY=y+dirY[2];;/// Go DOWN
@@ -165,7 +160,7 @@ bool canPlaceWall(int x, int y, char orientation)
         checkY=y+dirY[0]+dirY[1];/// Go UP+RIGHT
     }
    ///  If This wall intersects with another wall           If This wall is same as an existing wall                            If this wall falls within a part of another wall
-    if(placedWallStart[checkX][checkY][orientation!='V'] || placedWallStart[x][y][orientation=='V'] || placedWallStart[beforeX][beforeY][orientation=='V'] || placedWallStart[afterX][afterY][orientation=='V'])
+    if(placedWallStart[checkX][checkY][!orientationIndex] || placedWallStart[x][y][orientationIndex] || placedWallStart[beforeX][beforeY][orientationIndex] || placedWallStart[afterX][afterY][orientationIndex])
     {
         return false;
     }
@@ -235,6 +230,8 @@ int bfs(int x, int y,Target target)
             }
         }
     }
+    cerr<<"Got no results!!!\n";
+    return MAXPATH;
 }
 
 MoveDetails nextMove(int x, int y,Target target)
@@ -246,7 +243,7 @@ MoveDetails nextMove(int x, int y,Target target)
     {
         nowX=x+dirX[i];
         nowY=y+dirY[i];
-        //cerr<<"Entering the jungle";
+
         if(reachable(x,y,i))
         {
             if(nowX==target.targetX || nowY==target.targetY)
@@ -256,7 +253,6 @@ MoveDetails nextMove(int x, int y,Target target)
                 return moveDetails;
             }
             nowCost=bfs(nowX,nowY,target);
-           // cerr<<nowCost<<endl<<endl;
             if(nowCost<best)
             {
                 direction=i;
@@ -271,6 +267,10 @@ MoveDetails nextMove(int x, int y,Target target)
     }
     moveDetails.direnctionIndex=direction;
     moveDetails.cost=best;
+    if(best==MAXPATH)
+    {
+        cerr<<"2441139\n";
+    }
     return moveDetails;
 }
 
@@ -331,7 +331,7 @@ Wall BestWall()
 {
     MoveDetails currentMoves[4], bestMove[4];
     Wall bestWall;
-
+    cerr<<"Entering Best";
     bestWall.isInitialized=false;
     bool attackedTarget=false;
     int bestResult=0;
@@ -351,16 +351,28 @@ Wall BestWall()
 //                {
 ////                    cout<<"jhamela!!! "<<i<<' '<<j<<' '<<k<<endl<<endl;
 //                }
+
                 if(!canPlaceWall(i,j,orientationList[k]))///check if we can place a wall
                 {
                     continue;
                 }
+                cerr<<i<<' '<<j<< ' '<<k<<endl;
                 PlaceWall(i,j,orientationList[k]);
+                bool isBlocking=false;
                 for(int player=0; player<playerCount; player++)///placed wall, now simulate each player's shortest path
                 {
+                    if(!validPlayer[player])
+                        continue;
                     currentMoves[player]=nextMove(playersX[player],playersY[player],GetTarget(player));
+                    if(currentMoves[player].cost==MAXPATH)
+                        isBlocking=true;
                 }
                 removeWall(i,j,orientationList[k]);
+                if(isBlocking)
+                {
+                    cerr<<"kaamer faad!!!";
+                    continue;
+                }
                 if(currentMoves[myId].cost>nextBestMoves[myId].cost)///if this path becomes greater than my prev shortest path then abort
                 {
                     continue;
@@ -406,7 +418,39 @@ Wall BestWall()
             }
         }
     }
+    cerr<<"outta jungle!!!";
     return bestWall;
+}
+
+bool isPalinDrome(string A)
+{
+    cerr<<A<<endl;
+    int s=A.size()-1;
+    for(int i=0;i<=s/2; i++)
+    {
+        if(A[i]!=A[s-i])
+            return false;
+    }
+    return true;
+}
+
+int isPalindrome(string A) {
+    // Do not write main() function.
+    // Do not read input, instead use the arguments to the function.
+    // Do not print the output, instead return values as specified
+    // Still have a doubt. Checkout www.interviewbit.com/pages/sample_codes/ for more details
+    string mainString;
+    for(int i=0; i<A.size(); i++)
+    {
+        if(A[i]>='A' && A[i]<='Z')
+            mainString.push_back(A[i]);
+        else if(A[i]>='a' && A[i]<='z')
+        {
+            mainString.push_back(A[i]-32);
+        }
+    }
+    return isPalinDrome(mainString);
+
 }
 
 
@@ -419,97 +463,7 @@ Wall BestWall()
 int main()
 {
 
-
-    cin >> w >> h >> playerCount >> myId; cin.ignore();
-
-    while (1)
-    {
-        mem(cost, -1);
-        mem(placedWallStart,false);
-        for (int i = 0; i < playerCount; i++)
-        {
-            int x; // x-coordinate of the player
-            int y; // y-coordinate of the player
-            int wallsLeft; // number of walls available for the player
-            cin >> x >> y >> wallsLeft; cin.ignore();
-            playersX[i]=x;
-            playersY[i]=y;
-            playersWallsLeft[i]=wallsLeft;
-        }
-        int wallCount; // number of walls on the board
-        cin >> wallCount; cin.ignore();
-        for (int i = 0; i < wallCount; i++)
-        {
-            int wallX; // x-coordinate of the wall
-            int wallY; // y-coordinate of the wall
-            char wallOrientation; // wall orientation ('H' or 'V')
-            cin >> wallX >> wallY >> wallOrientation; cin.ignore();
-            PlaceWall(wallX, wallY, wallOrientation);
-        }
-
-
-
-
-
-        int myCost,myNextDirection,nextShortestDistance;
-
-        for(int i=0;i<playerCount; i++)
-        {
-            Target target=GetTarget(i);
-            nextBestMoves[i]=nextMove(playersX[i],playersY[i], target);
-        }
-
-        myCost=nextBestMoves[myId].cost;
-        myNextDirection=nextBestMoves[myId].direnctionIndex;
-
-        bool isSomeoneAhead=false;
-
-        for(int i=0;i<playerCount; i++)
-        {
-            if(i==myId)
-                continue;
-            int currentPlayerCost;
-
-            currentPlayerCost=nextBestMoves[i].cost;
-
-            if(currentPlayerCost==myCost && myId>i)
-            {
-                targetPlayer=i;
-                isSomeoneAhead=true;
-                break;
-            }
-            else if(currentPlayerCost<myCost && !isSomeoneAhead)
-            {
-                isSomeoneAhead=true;
-                targetPlayer=i;
-            }
-
-            else if(currentPlayerCost<myCost && currentPlayerCost>nextBestMoves[targetPlayer].cost)
-            {
-                isSomeoneAhead=true;
-                targetPlayer=i;
-            }
-        }
-
-        if(!isSomeoneAhead || !playersWallsLeft[myId])
-        {
-            cout<<directions[myNextDirection]<<endl;
-            continue;
-        }
-
-        bool gotAresult;
-
-
-        Wall wall=BestWall();
-        if(wall.isInitialized)
-        {
-            cout<<wall.point.x<<' '<<wall.point.y<<' '<<wall.orientation<<endl;
-            gotAresult=true;
-        }
-
-        else if(!gotAresult)
-        {
-            cout<<directions[myNextDirection]<<endl;
-        }
-    }
+    string abc;
+    getline(cin, abc);
+    cout<<isPalindrome(abc)<<endl;
 }
