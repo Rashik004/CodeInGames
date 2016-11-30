@@ -207,7 +207,15 @@ void PlayDefensive(int playerIndex)
 	for (int i = opponentIndex; i <= opponentIndex + 1; i++)
 	{
 		pii opponentPosition = mp(positionDetails[i][1], positionDetails[i][2]);
-		//if(sqrDistance(myGoalBar, opponentPosition)<sqrDistance(myGoalBar, myPosition) && )
+		for (int j = 4; j <= highSnaffle; j++)
+		{
+			pii ballPosition = mp(positionDetails[j][1], positionDetails[j][2]);
+			if (sqrDistance(myGoalBar, opponentPosition) < sqrDistance(myGoalBar, myPosition) && sqrDistance(ballPosition, opponentPosition) < sqrDistance(ballPosition, myPosition))
+			{
+				if()
+			}
+
+		}
 	}
 }
 
